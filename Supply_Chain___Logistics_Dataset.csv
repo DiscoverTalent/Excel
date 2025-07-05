@@ -1,0 +1,51 @@
+Product,Supplier,Warehouse Location,Quantity,Unit Price,Total Cost,Delivery Date,Logistics Partner,Shipping Method,Delivery Status
+Widget A,Alpha Corp,Warehouse 3,45,16.02,720.9,2025-06-05,FastTrans,Air,Pending
+Widget A,Alpha Corp,Warehouse 1,37,15.47,572.39,2025-06-20,FastTrans,Road,Pending
+Widget B,Delta LLC,Warehouse 3,45,41.42,1863.9,2025-06-01,ShipSmart,Sea,Delayed
+Gadget X,Beta Ltd,Warehouse 1,53,9.6,508.8,2025-06-13,FastTrans,Rail,Delayed
+Tool Z,Gamma Inc,Warehouse 1,68,29.13,1980.84,2025-06-30,TransEdge,Air,Delayed
+Tool Z,Gamma Inc,Warehouse 3,34,36.71,1248.14,2025-06-02,ShipSmart,Rail,In Transit
+Widget B,Alpha Corp,Warehouse 2,45,25.4,1143.0,2025-06-27,LogiQuick,Road,Delayed
+Gadget X,Beta Ltd,Warehouse 3,44,36.58,1609.52,2025-06-22,FastTrans,Road,Delivered
+Widget B,Delta LLC,Warehouse 2,44,49.53,2179.32,2025-06-21,FleetPro,Road,Delayed
+Widget A,Beta Ltd,Warehouse 1,50,23.05,1152.5,2025-06-03,ShipSmart,Rail,Delivered
+Gadget Y,Delta LLC,Warehouse 3,68,11.43,777.24,2025-06-05,ShipSmart,Rail,Pending
+Tool Z,Delta LLC,Warehouse 2,38,49.88,1895.44,2025-06-05,FleetPro,Sea,In Transit
+Widget A,Alpha Corp,Warehouse 1,90,12.2,1098.0,2025-06-22,TransEdge,Air,Pending
+Gadget Y,Epsilon Co,Warehouse 2,77,16.31,1255.87,2025-06-18,FastTrans,Air,Delayed
+Gadget X,Alpha Corp,Warehouse 2,65,12.12,787.8,2025-06-01,LogiQuick,Road,In Transit
+Gadget X,Epsilon Co,Warehouse 3,35,11.88,415.8,2025-06-25,ShipSmart,Air,Delayed
+Gadget Y,Alpha Corp,Warehouse 1,56,44.54,2494.24,2025-06-27,LogiQuick,Road,In Transit
+Widget B,Epsilon Co,Warehouse 1,20,37.94,758.8,2025-06-27,FastTrans,Road,Delivered
+Gadget Y,Epsilon Co,Warehouse 1,43,28.75,1236.25,2025-06-20,TransEdge,Road,Delivered
+Gadget X,Delta LLC,Warehouse 3,93,21.8,2027.4,2025-06-29,FleetPro,Sea,In Transit
+Widget B,Beta Ltd,Warehouse 1,53,5.95,315.35,2025-06-18,ShipSmart,Road,In Transit
+Widget A,Alpha Corp,Warehouse 1,18,45.74,823.32,2025-06-28,LogiQuick,Air,Delivered
+Gadget X,Delta LLC,Warehouse 1,79,10.95,865.05,2025-06-30,FleetPro,Sea,Delivered
+Gadget Y,Delta LLC,Warehouse 1,22,9.36,205.92,2025-06-14,LogiQuick,Sea,Pending
+Gadget Y,Alpha Corp,Warehouse 3,93,49.29,4583.97,2025-06-04,FastTrans,Sea,Delayed
+Widget A,Beta Ltd,Warehouse 1,34,29.13,990.42,2025-06-05,TransEdge,Road,Delayed
+Gadget Y,Beta Ltd,Warehouse 1,66,41.36,2729.76,2025-06-28,FleetPro,Air,In Transit
+Tool Z,Alpha Corp,Warehouse 1,40,12.48,499.2,2025-06-16,TransEdge,Road,Pending
+Widget A,Beta Ltd,Warehouse 2,10,49.34,493.4,2025-06-09,TransEdge,Rail,Pending
+Tool Z,Delta LLC,Warehouse 1,34,18.35,623.9,2025-07-01,FastTrans,Air,Delayed
+Widget A,Alpha Corp,Warehouse 3,71,27.63,1961.73,2025-06-28,FleetPro,Road,In Transit
+Tool Z,Alpha Corp,Warehouse 1,18,31.78,572.04,2025-06-22,ShipSmart,Sea,In Transit
+Tool Z,Beta Ltd,Warehouse 3,86,6.79,583.94,2025-06-03,TransEdge,Rail,Delayed
+Widget B,Gamma Inc,Warehouse 1,43,22.81,980.83,2025-06-22,LogiQuick,Sea,Delayed
+Widget A,Alpha Corp,Warehouse 2,89,49.93,4443.77,2025-06-04,FastTrans,Road,Delayed
+Widget B,Gamma Inc,Warehouse 1,41,21.63,886.83,2025-06-06,TransEdge,Rail,In Transit
+Tool Z,Gamma Inc,Warehouse 3,23,47.25,1086.75,2025-06-05,LogiQuick,Air,In Transit
+Tool Z,Beta Ltd,Warehouse 2,46,32.22,1482.12,2025-06-23,LogiQuick,Road,Delayed
+Tool Z,Delta LLC,Warehouse 2,16,9.15,146.4,2025-06-14,LogiQuick,Air,In Transit
+Gadget X,Beta Ltd,Warehouse 3,43,12.27,527.61,2025-06-15,FleetPro,Sea,In Transit
+Widget A,Alpha Corp,Warehouse 3,29,29.55,856.95,2025-06-27,LogiQuick,Road,Pending
+Widget B,Alpha Corp,Warehouse 2,56,45.45,2545.2,2025-06-26,FastTrans,Rail,Delivered
+Widget B,Alpha Corp,Warehouse 2,81,44.79,3627.99,2025-06-14,FleetPro,Road,Delivered
+Widget B,Beta Ltd,Warehouse 2,13,13.07,169.91,2025-06-30,LogiQuick,Sea,Delivered
+Gadget X,Beta Ltd,Warehouse 3,23,22.21,510.83,2025-06-02,TransEdge,Road,Delivered
+Gadget Y,Gamma Inc,Warehouse 2,39,15.03,586.17,2025-06-22,ShipSmart,Sea,Delayed
+Gadget X,Alpha Corp,Warehouse 2,54,33.87,1828.98,2025-06-13,FleetPro,Rail,In Transit
+Widget A,Gamma Inc,Warehouse 1,84,48.31,4058.04,2025-06-09,FastTrans,Air,Pending
+Gadget X,Gamma Inc,Warehouse 2,87,49.29,4288.23,2025-06-04,TransEdge,Road,Delayed
+Widget A,Delta LLC,Warehouse 1,76,46.65,3545.4,2025-06-18,ShipSmart,Rail,Pending
