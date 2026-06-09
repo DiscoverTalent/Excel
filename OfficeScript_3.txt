@@ -1,0 +1,6 @@
+
+// Script 3: Remove hyperlinks from active worksheet
+function main(workbook: ExcelScript.Workbook) {
+  let sheet = workbook.getActiveWorksheet();
+  sheet.getUsedRange().clear(ExcelScript.ClearApplyTo.hyperlinks);
+}

@@ -1,0 +1,8 @@
+
+// Script 2: Create Pivot Table from SalesData
+function main(workbook: ExcelScript.Workbook) {
+  let sheet = workbook.getWorksheet("SalesData");
+  let pivotSheet = workbook.addWorksheet("PivotReport");
+  let pivot = workbook.addPivotTable("SalesPivot", sheet.getUsedRange(), pivotSheet.getRange("A1"));
+  pivot.addRowHierarchy(pivot.getHierarchy("Product"));
+}

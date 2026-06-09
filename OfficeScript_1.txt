@@ -1,0 +1,13 @@
+
+// Script 1: Highlight high sales (>500 total)
+function main(workbook: ExcelScript.Workbook) {
+  let sheet = workbook.getWorksheet("SalesData");
+  let range = sheet.getUsedRange();
+  let values = range.getValues();
+  for (let i = 1; i < values.length; i++) {
+    let total = Number(values[i][2]) * Number(values[i][3]);
+    if (total > 500) {
+      range.getCell(i, 0).getEntireRow().getFormat().getFill().setColor("Yellow");
+    }
+  }
+}
