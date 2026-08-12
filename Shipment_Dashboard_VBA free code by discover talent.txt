@@ -1,0 +1,377 @@
+Option Explicit
+
+'=====================================================================
+' SHIPMENT & CUSTOMS ANALYTICS DASHBOARD - 100% VBA
+' Paste this whole module into a Standard Module (Alt+F11 > Insert > Module)
+' Run: CreateShipmentDashboard  (first build)
+' Run: RefreshShipmentDashboard (after data changes, or click the button)
+'=====================================================================
+
+Private Const DASH_NAME As String = "VBA Dashboard"
+
+'---------------------------------------------------------------------
+' MAIN ENTRY POINTS
+'---------------------------------------------------------------------
+Sub CreateShipmentDashboard()
+    BuildDashboard
+End Sub
+
+Sub RefreshShipmentDashboard()
+    BuildDashboard
+End Sub
+
+'---------------------------------------------------------------------
+' CORE BUILD ROUTINE
+'---------------------------------------------------------------------
+Sub BuildDashboard()
+
+    On Error GoTo ErrHandler
+    Application.ScreenUpdating = False
+    Application.DisplayAlerts = False
+    Application.EnableEvents = False
+
+    Dim wsSrc As Worksheet, wsDash As Worksheet
+    Set wsSrc = FindSourceSheet()
+    If wsSrc Is Nothing Then
+        MsgBox "Could not find a source data sheet with the required headers.", vbCritical
+        GoTo CleanExit
+    End If
+
+    ' --- Detect columns dynamically by header name ---
+    Dim cID As Long, cCountry As Long, cWeight As Long, cShipCost As Long
+    Dim cCustFee As Long, cStatus As Long, cRelease As Long
+
+    cID = GetColIndex(wsSrc, "Shipment ID")
+    cCountry = GetColIndex(wsSrc, "Country")
+    cWeight = GetColIndex(wsSrc, "Weight (Tons)")
+    cShipCost = GetColIndex(wsSrc, "Shipping Cost ($)")
+    cCustFee = GetColIndex(wsSrc, "Customs Fee ($)")
+    cStatus = GetColIndex(wsSrc, "Shipment Status")
+    cRelease = GetColIndex(wsSrc, "Release Time (Days)")
+
+    If cID = 0 Or cCountry = 0 Or cStatus = 0 Then
+        MsgBox "Required headers not found on sheet '" & wsSrc.Name & "'.", vbCritical
+        GoTo CleanExit
+    End If
+
+    Dim lastRow As Long
+    lastRow = FindLastRow(wsSrc, cID)
+    If lastRow < 2 Then
+        MsgBox "No data rows found under the headers.", vbExclamation
+        GoTo CleanExit
+    End If
+
+    ' --- Aggregation dictionaries ---
+    Dim dCount As Object, dCost As Object, dReleaseSum As Object, dStatus As Object
+    Set dCount = CreateObject("Scripting.Dictionary")
+    Set dCost = CreateObject("Scripting.Dictionary")
+    Set dReleaseSum = CreateObject("Scripting.Dictionary")
+    Set dStatus = CreateObject("Scripting.Dictionary")
+
+    Dim totalShipments As Long, customsHolds As Long
+    Dim totalWeight As Double, totalShipCost As Double
+    Dim totalCustFee As Double, totalReleaseTime As Double
+
+    Dim r As Long, ctry As String, stat As String
+    Dim wt As Double, sc As Double, cf As Double, rt As Double
+
+    For r = 2 To lastRow
+        If Trim(CStr(wsSrc.Cells(r, cID).Value)) <> "" Then
+            totalShipments = totalShipments + 1
+
+            ctry = Trim(CStr(wsSrc.Cells(r, cCountry).Value))
+            If ctry = "" Then ctry = "Unknown"
+
+            stat = Trim(CStr(wsSrc.Cells(r, cStatus).Value))
+            If stat = "" Then stat = "Unknown"
+
+            wt = NzD(wsSrc, r, cWeight)
+            sc = NzD(wsSrc, r, cShipCost)
+            cf = NzD(wsSrc, r, cCustFee)
+            rt = NzD(wsSrc, r, cRelease)
+
+            totalWeight = totalWeight + wt
+            totalShipCost = totalShipCost + sc
+            totalCustFee = totalCustFee + cf
+            totalReleaseTime = totalReleaseTime + rt
+
+            If InStr(1, stat, "Hold", vbTextCompare) > 0 Then
+                customsHolds = customsHolds + 1
+            End If
+
+            If dCount.Exists(ctry) Then
+                dCount(ctry) = dCount(ctry) + 1
+                dCost(ctry) = dCost(ctry) + sc
+                dReleaseSum(ctry) = dReleaseSum(ctry) + rt
+            Else
+                dCount.Add ctry, 1
+                dCost.Add ctry, sc
+                dReleaseSum.Add ctry, rt
+            End If
+
+            If dStatus.Exists(stat) Then
+                dStatus(stat) = dStatus(stat) + 1
+            Else
+                dStatus.Add stat, 1
+            End If
+        End If
+    Next r
+
+    Dim avgRelease As Double
+    If totalShipments > 0 Then avgRelease = totalReleaseTime / totalShipments
+
+    ' --- Prepare / reset dashboard sheet ---
+    Set wsDash = PrepareDashboardSheet()
+
+    ' --- Title ---
+    With wsDash.Range("B2:S3")
+        .Merge
+        .Value = "Shipment & Customs Analytics Dashboard"
+        .Font.Size = 22
+        .Font.Bold = True
+        .Font.Color = RGB(255, 255, 255)
+        .Interior.Color = RGB(21, 51, 92)
+        .HorizontalAlignment = xlCenter
+        .VerticalAlignment = xlCenter
+    End With
+    wsDash.Range("B2:S3").RowHeight = 30
+
+    ' --- Refresh button (shape) ---
+    AddRefreshButton wsDash
+
+    ' --- KPI Cards ---
+    AddKPICard wsDash, 5, 2, "TOTAL SHIPMENTS", Format(totalShipments, "#,##0"), RGB(41, 128, 185)
+    AddKPICard wsDash, 5, 6, "TOTAL WEIGHT", Format(totalWeight, "#,##0.0") & " Tons", RGB(39, 174, 96)
+    AddKPICard wsDash, 5, 10, "TOTAL SHIPPING COST", Format(totalShipCost, "$#,##0"), RGB(230, 126, 34)
+    AddKPICard wsDash, 10, 2, "TOTAL CUSTOMS FEES", Format(totalCustFee, "$#,##0"), RGB(155, 89, 182)
+    AddKPICard wsDash, 10, 6, "AVG RELEASE TIME", Format(avgRelease, "0.0") & " Days", RGB(52, 73, 94)
+    AddKPICard wsDash, 10, 10, "CUSTOMS HOLDS", Format(customsHolds, "#,##0"), RGB(192, 57, 43)
+
+    ' --- Write hidden chart-source data tables ---
+    Dim baseCol As Long
+    baseCol = 21 ' column U
+
+    wsDash.Cells(1, baseCol).Value = "Country"
+    wsDash.Cells(1, baseCol + 1).Value = "Shipments"
+    wsDash.Cells(1, baseCol + 2).Value = "ShippingCost"
+    wsDash.Cells(1, baseCol + 3).Value = "AvgReleaseTime"
+
+    Dim k As Variant, i As Long
+    i = 1
+    For Each k In dCount.Keys
+        i = i + 1
+        wsDash.Cells(i, baseCol).Value = k
+        wsDash.Cells(i, baseCol + 1).Value = dCount(k)
+        wsDash.Cells(i, baseCol + 2).Value = dCost(k)
+        wsDash.Cells(i, baseCol + 3).Value = dReleaseSum(k) / dCount(k)
+    Next k
+    Dim countryRows As Long
+    countryRows = dCount.Count
+
+    Dim statusCol As Long
+    statusCol = baseCol + 5 ' column Z
+    wsDash.Cells(1, statusCol).Value = "Status"
+    wsDash.Cells(1, statusCol + 1).Value = "Count"
+    i = 1
+    For Each k In dStatus.Keys
+        i = i + 1
+        wsDash.Cells(i, statusCol).Value = k
+        wsDash.Cells(i, statusCol + 1).Value = dStatus(k)
+    Next k
+    Dim statusRows As Long
+    statusRows = dStatus.Count
+
+    ' --- Charts ---
+    Dim countryNameRng As Range, countryCountRng As Range
+    Dim countryCostRng As Range, countryAvgRng As Range
+    Dim statusNameRng As Range, statusCountRng As Range
+
+    Set countryNameRng = wsDash.Range(wsDash.Cells(2, baseCol), wsDash.Cells(1 + countryRows, baseCol))
+    Set countryCountRng = wsDash.Range(wsDash.Cells(2, baseCol + 1), wsDash.Cells(1 + countryRows, baseCol + 1))
+    Set countryCostRng = wsDash.Range(wsDash.Cells(2, baseCol + 2), wsDash.Cells(1 + countryRows, baseCol + 2))
+    Set countryAvgRng = wsDash.Range(wsDash.Cells(2, baseCol + 3), wsDash.Cells(1 + countryRows, baseCol + 3))
+    Set statusNameRng = wsDash.Range(wsDash.Cells(2, statusCol), wsDash.Cells(1 + statusRows, statusCol))
+    Set statusCountRng = wsDash.Range(wsDash.Cells(2, statusCol + 1), wsDash.Cells(1 + statusRows, statusCol + 1))
+
+    BuildChart wsDash, "chShipCountry", "Shipments by Country", xlColumnClustered, _
+        countryNameRng, countryCountRng, wsDash.Cells(14, 2).Left, wsDash.Cells(14, 2).Top, 330, 230
+
+    BuildChart wsDash, "chStatus", "Shipment Status Distribution", xlPie, _
+        statusNameRng, statusCountRng, wsDash.Cells(14, 9).Left, wsDash.Cells(14, 9).Top, 330, 230
+
+    BuildChart wsDash, "chCostCountry", "Shipping Cost by Country ($)", xlColumnClustered, _
+        countryNameRng, countryCostRng, wsDash.Cells(14, 2).Left, wsDash.Cells(30, 2).Top, 330, 230
+
+    BuildChart wsDash, "chReleaseCountry", "Avg Release Time by Country (Days)", xlColumnClustered, _
+        countryNameRng, countryAvgRng, wsDash.Cells(14, 9).Left, wsDash.Cells(30, 2).Top, 330, 230
+
+    ' --- Hide the raw chart-data helper columns for a clean look ---
+    wsDash.Range(wsDash.Columns(baseCol), wsDash.Columns(statusCol + 1)).EntireColumn.Hidden = True
+
+    ' --- Final cosmetics ---
+    wsDash.Columns("A").ColumnWidth = 2
+    wsDash.Range("A1").Select
+    wsDash.Activate
+    ActiveWindow.DisplayGridlines = False
+    wsDash.Tab.Color = RGB(21, 51, 92)
+
+CleanExit:
+    Application.ScreenUpdating = True
+    Application.DisplayAlerts = True
+    Application.EnableEvents = True
+    Exit Sub
+
+ErrHandler:
+    MsgBox "Dashboard error: " & Err.Description, vbCritical
+    Resume CleanExit
+
+End Sub
+
+'---------------------------------------------------------------------
+' HELPERS
+'---------------------------------------------------------------------
+Private Function FindSourceSheet() As Worksheet
+    Dim ws As Worksheet, c As Long
+    For Each ws In ThisWorkbook.Worksheets
+        If ws.Name <> DASH_NAME Then
+            If GetColIndex(ws, "Shipment ID") > 0 And GetColIndex(ws, "Country") > 0 _
+               And GetColIndex(ws, "Shipment Status") > 0 Then
+                Set FindSourceSheet = ws
+                Exit Function
+            End If
+        End If
+    Next ws
+    Set FindSourceSheet = Nothing
+End Function
+
+Private Function GetColIndex(ws As Worksheet, headerName As String) As Long
+    Dim lastCol As Long, c As Long
+    lastCol = ws.Cells(1, ws.Columns.Count).End(xlToLeft).Column
+    If lastCol < 1 Then lastCol = 1
+    For c = 1 To lastCol
+        If StrComp(Trim(CStr(ws.Cells(1, c).Value)), headerName, vbTextCompare) = 0 Then
+            GetColIndex = c
+            Exit Function
+        End If
+    Next c
+    GetColIndex = 0
+End Function
+
+Private Function FindLastRow(ws As Worksheet, col As Long) As Long
+    FindLastRow = ws.Cells(ws.Rows.Count, col).End(xlUp).Row
+End Function
+
+Private Function NzD(ws As Worksheet, r As Long, c As Long) As Double
+    If c = 0 Then
+        NzD = 0
+        Exit Function
+    End If
+    If IsNumeric(ws.Cells(r, c).Value) Then
+        NzD = CDbl(ws.Cells(r, c).Value)
+    Else
+        NzD = 0
+    End If
+End Function
+
+Private Function PrepareDashboardSheet() As Worksheet
+    Dim ws As Worksheet
+    On Error Resume Next
+    Set ws = ThisWorkbook.Worksheets(DASH_NAME)
+    On Error GoTo 0
+
+    If Not ws Is Nothing Then
+        Dim shp As Shape
+        For Each shp In ws.Shapes
+            shp.Delete
+        Next shp
+        ws.Cells.Clear
+    Else
+        Set ws = ThisWorkbook.Worksheets.Add(After:=ThisWorkbook.Worksheets(ThisWorkbook.Worksheets.Count))
+        ws.Name = DASH_NAME
+    End If
+
+    Set PrepareDashboardSheet = ws
+End Function
+
+Private Sub AddKPICard(ws As Worksheet, topRow As Long, leftCol As Long, _
+                        title As String, value As String, cardColor As Long)
+
+    Dim lblRng As Range, valRng As Range
+
+    Set lblRng = ws.Range(ws.Cells(topRow, leftCol), ws.Cells(topRow, leftCol + 2))
+    lblRng.Merge
+    lblRng.Value = title
+    lblRng.Font.Size = 10
+    lblRng.Font.Bold = True
+    lblRng.Font.Color = RGB(255, 255, 255)
+    lblRng.Interior.Color = cardColor
+    lblRng.HorizontalAlignment = xlCenter
+    lblRng.VerticalAlignment = xlCenter
+    ws.Rows(topRow).RowHeight = 20
+
+    Set valRng = ws.Range(ws.Cells(topRow + 1, leftCol), ws.Cells(topRow + 2, leftCol + 2))
+    valRng.Merge
+    valRng.Value = value
+    valRng.Font.Size = 18
+    valRng.Font.Bold = True
+    valRng.Font.Color = cardColor
+    valRng.Interior.Color = RGB(245, 246, 250)
+    valRng.HorizontalAlignment = xlCenter
+    valRng.VerticalAlignment = xlCenter
+    valRng.Borders.Color = cardColor
+    valRng.Borders.Weight = xlThin
+    ws.Rows(topRow + 1).RowHeight = 25
+    ws.Rows(topRow + 2).RowHeight = 25
+End Sub
+
+Private Sub AddRefreshButton(ws As Worksheet)
+    Dim btn As Shape
+    Set btn = ws.Shapes.AddShape(msoShapeRoundedRectangle, ws.Cells(2, 15).Left, ws.Cells(2, 15).Top, 130, 40)
+    With btn
+        .Name = "btnRefreshDashboard"
+        .Fill.ForeColor.RGB = RGB(39, 174, 96)
+        .Line.Visible = msoFalse
+        .TextFrame2.TextRange.Text = "REFRESH DASHBOARD"
+        .TextFrame2.TextRange.Font.Size = 11
+        .TextFrame2.TextRange.Font.Bold = msoTrue
+        .TextFrame2.TextRange.Font.Fill.ForeColor.RGB = RGB(255, 255, 255)
+        .TextFrame2.VerticalAnchor = msoAnchorMiddle
+        .TextFrame2.HorizontalAnchor = msoAnchorCenter
+        .OnAction = "RefreshShipmentDashboard"
+    End With
+End Sub
+
+Private Sub BuildChart(ws As Worksheet, chName As String, chTitle As String, chType As XlChartType, _
+                        catRange As Range, valRange As Range, _
+                        posLeft As Double, posTop As Double, w As Double, h As Double)
+
+    Dim oldChart As ChartObject
+    On Error Resume Next
+    Set oldChart = ws.ChartObjects(chName)
+    If Not oldChart Is Nothing Then oldChart.Delete
+    On Error GoTo 0
+
+    Dim co As ChartObject
+    Set co = ws.ChartObjects.Add(posLeft, posTop, w, h)
+    co.Name = chName
+
+    With co.Chart
+        .ChartType = chType
+        .SetSourceData Source:=valRange
+        .SeriesCollection(1).XValues = catRange
+        .SeriesCollection(1).Name = chTitle
+        .HasTitle = True
+        .ChartTitle.Text = chTitle
+        .ChartTitle.Font.Size = 11
+        .ChartTitle.Font.Bold = True
+        .PlotVisibleOnly = False
+        .HasLegend = (chType = xlPie)
+        If chType = xlPie Then
+            .ApplyDataLabels ShowPercentage:=True, ShowValue:=False
+        Else
+            .HasLegend = False
+            .Axes(xlCategory).TickLabels.Font.Size = 8
+            .Axes(xlValue).TickLabels.Font.Size = 8
+        End If
+    End With
+End Sub
