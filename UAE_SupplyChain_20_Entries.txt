@@ -1,0 +1,21 @@
+Shipment_ID	Customer_Name	Emirate	Product	Category	Quantity	Status
+SH2001	Mohammed Al Mansoori	Dubai	Laptop	Electronics	12	Delivered
+SH2002	Aisha Al Nuaimi	Abu Dhabi	Barcode Scanner	Equipment	8	In Transit
+SH2003	Omar Al Marzouqi	Sharjah	Office Chair	Furniture	25	Delivered
+SH2004	Fatima Al Suwaidi	Dubai	Printer	Electronics	10	Pending
+SH2005	Khalid Al Hammadi	Ajman	Storage Rack	Warehouse	15	Delivered
+SH2006	Noura Al Shamsi	Abu Dhabi	Tablet	Electronics	18	In Transit
+SH2007	Hamad Al Falasi	Dubai	Packaging Box	Packaging	150	Delivered
+SH2008	Mariam Al Mazrouei	Sharjah	Hand Pallet Truck	Equipment	6	Pending
+SH2009	Saeed Al Kaabi	Abu Dhabi	Desktop PC	Electronics	9	Delivered
+SH2010	Reem Al Dhaheri	Dubai	Label Printer	Equipment	14	In Transit
+SH2011	Yousef Al Ketbi	Ajman	Safety Helmet	Safety	45	Delivered
+SH2012	Noor Al Blooshi	Sharjah	Steel Shelf	Warehouse	20	Pending
+SH2013	Ahmed Al Shahi	Dubai	Monitor	Electronics	22	Delivered
+SH2014	Salma Al Hosani	Abu Dhabi	Packing Tape	Packaging	120	In Transit
+SH2015	Rashid Al Ameri	Dubai	Hand Scanner	Equipment	11	Delivered
+SH2016	Hessa Al Matroushi	Sharjah	Workstation	Furniture	7	Pending
+SH2017	Majid Al Zarooni	Ajman	Safety Vest	Safety	60	Delivered
+SH2018	Latifa Al Marri	Abu Dhabi	Server Rack	IT Equipment	5	In Transit
+SH2019	Abdullah Al Muhairi	Dubai	Pallet	Warehouse	80	Delivered
+SH2020	Shamma Al Suhaili	Sharjah	Shipping Label	Packaging	300	Pending

@@ -1,0 +1,21 @@
+﻿Order_ID,Order_Date,Customer_Name,Emirate,Product,Category,Quantity,Unit_Price_AED,Supplier,Warehouse
+SC1001,2026-08-01,Mohammed Al Mansoori,Dubai,Laptop,Electronics,12,2850,Gulf Tech Supplies,Dubai
+SC1002,2026-08-02,Aisha Al Nuaimi,Abu Dhabi,Barcode Scanner,Equipment,8,1250,Emirates Industrial,Abu Dhabi
+SC1003,2026-08-03,Omar Al Marzouqi,Sharjah,Office Chair,Furniture,25,680,Desert Office Solutions,Sharjah
+SC1004,2026-08-04,Fatima Al Suwaidi,Dubai,Printer,Electronics,10,1450,Gulf Tech Supplies,Dubai
+SC1005,2026-08-05,Khalid Al Hammadi,Ajman,Storage Rack,Warehouse,15,920,Emirates Industrial,Ajman
+SC1006,2026-08-06,Noura Al Shamsi,Abu Dhabi,Tablet,Electronics,18,1750,Gulf Digital Trading,Abu Dhabi
+SC1007,2026-08-07,Hamad Al Falasi,Dubai,Packaging Box,Packaging,150,18,Desert Packaging,Dubai
+SC1008,2026-08-08,Mariam Al Mazrouei,Sharjah,Hand Pallet Truck,Equipment,6,1350,Emirates Industrial,Sharjah
+SC1009,2026-08-09,Saeed Al Kaabi,Abu Dhabi,Desktop PC,Electronics,9,3200,Gulf Tech Supplies,Abu Dhabi
+SC1010,2026-08-10,Reem Al Dhaheri,Dubai,Label Printer,Equipment,14,780,Gulf Digital Trading,Dubai
+SC1011,2026-08-11,Yousef Al Ketbi,Ajman,Safety Helmet,Safety,45,85,Desert Safety Products,Ajman
+SC1012,2026-08-12,Noor Al Blooshi,Sharjah,Steel Shelf,Warehouse,20,740,Emirates Industrial,Sharjah
+SC1013,2026-08-13,Ahmed Al Shahi,Dubai,Monitor,Electronics,22,890,Gulf Tech Supplies,Dubai
+SC1014,2026-08-14,Salma Al Hosani,Abu Dhabi,Packing Tape,Packaging,120,12,Desert Packaging,Abu Dhabi
+SC1015,2026-08-15,Rashid Al Ameri,Dubai,Hand Scanner,Equipment,11,1150,Gulf Digital Trading,Dubai
+SC1016,2026-08-16,Hessa Al Matroushi,Sharjah,Workstation,Furniture,7,2450,Desert Office Solutions,Sharjah
+SC1017,2026-08-17,Majid Al Zarooni,Ajman,Safety Vest,Safety,60,45,Desert Safety Products,Ajman
+SC1018,2026-08-18,Latifa Al Marri,Abu Dhabi,Server Rack,IT Equipment,5,3800,Gulf Digital Trading,Abu Dhabi
+SC1019,2026-08-19,Abdullah Al Muhairi,Dubai,Pallet,Warehouse,80,95,Emirates Industrial,Dubai
+SC1020,2026-08-20,Shamma Al Suhaili,Sharjah,Shipping Label,Packaging,300,4,Desert Packaging,Sharjah
