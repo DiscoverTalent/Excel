@@ -28,6 +28,8 @@ Explore our carefully curated video playlists covering a wide range of Excel and
 
 Explore the following organized folders for a seamless learning experience:
 
+- [Rounding direction practice](Rounding_Direction_Practice.md): six signed readings, blank answer cells, and formula-based solutions for FLOOR, ROUNDDOWN and INT.
+
 
 Unpack, explore, and use with the corresponding YouTube videos for guided walkthroughs.
 
